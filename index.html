@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Password Generator</title>
+    <meta name="description" content="Secure, advanced password generator and strength analyzer.">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles/theme.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="styles/components.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="assets/icons/shield-lock.svg" alt="Logo" width="32" height="32">
+                </div>
+                <h1>Pass<span class="text-accent">Guard</span></h1>
+            </div>
+            <button id="theme-toggle" class="btn-icon" aria-label="Toggle Dark Mode">
+                <img src="assets/icons/sun.svg" class="icon-sun" alt="Light Mode">
+                <img src="assets/icons/moon.svg" class="icon-moon" alt="Dark Mode">
+            </button>
+        </header>
+
+        <main class="main-content">
+            <!-- Password Display Section -->
+            <section class="card password-card">
+                <div class="password-display-container">
+                    <div class="password-text" id="password-output" placeholder="Generated Password"></div>
+                    <div class="password-actions">
+                        <button id="copy-btn" class="btn-icon" aria-label="Copy Password" data-tooltip="Copy">
+                            <img src="assets/icons/copy.svg" alt="Copy">
+                        </button>
+                        <button id="regenerate-btn" class="btn-icon" aria-label="Regenerate Password"
+                            data-tooltip="Regenerate">
+                            <img src="assets/icons/refresh.svg" alt="Regenerate">
+                        </button>
+                    </div>
+                </div>
+                <div class="strength-bar-container">
+                    <div class="strength-label">
+                        <span>Strength:</span>
+                        <span id="strength-text">--</span>
+                    </div>
+                    <div class="strength-meter">
+                        <div class="meter-bar" id="strength-bar"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid-layout">
+                <!-- Generator Controls -->
+                <section class="card generator-card">
+                    <div class="card-header">
+                        <h2>Configuration</h2>
+                        <div class="preset-controls">
+                            <select id="preset-select" class="select-input">
+                                <option value="" disabled selected>Load Preset</option>
+                                <!-- Presets populated by JS -->
+                            </select>
+                            <button id="save-preset-btn" class="btn-small" aria-label="Save Preset"
+                                data-tooltip="Save Preset">
+                                <img src="assets/icons/save.svg" alt="Save">
+                            </button>
+                            <button id="delete-preset-btn" class="btn-small text-danger" aria-label="Delete Preset"
+                                data-tooltip="Delete Preset">
+                                <img src="assets/icons/trash.svg" alt="Delete">
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="slider-header">
+                            <label for="length-slider">Length</label>
+                            <span id="length-value" class="badge">16</span>
+                        </div>
+                        <input type="range" id="length-slider" min="8" max="64" value="16" class="slider">
+                    </div>
+
+                    <div class="options-grid">
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="include-uppercase" checked>
+                            <span class="checkbox-custom"></span>
+                            <span class="label-text">Uppercase (A-Z)</span>
+                        </label>
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="include-lowercase" checked>
+                            <span class="checkbox-custom"></span>
+                            <span class="label-text">Lowercase (a-z)</span>
+                        </label>
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="include-numbers" checked>
+                            <span class="checkbox-custom"></span>
+                            <span class="label-text">Numbers (0-9)</span>
+                        </label>
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="include-symbols" checked>
+                            <span class="checkbox-custom"></span>
+                            <span class="label-text">Symbols (!@#$)</span>
+                        </label>
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="exclude-ambiguous">
+                            <span class="checkbox-custom"></span>
+                            <span class="label-text">No Ambiguous (il1Lo0)</span>
+                        </label>
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="prevent-sequential">
+                            <span class="checkbox-custom"></span>
+                            <span class="label-text">No Sequential (abc, 123)</span>
+                        </label>
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="prevent-repeat">
+                            <span class="checkbox-custom"></span>
+                            <span class="label-text">No Repeats (aaa)</span>
+                        </label>
+                    </div>
+
+                    <button id="generate-btn" class="btn-primary">Generate Password</button>
+                </section>
+
+                <!-- Analysis & History -->
+                <div class="sidebar-layout">
+                    <!-- Strength Analysis -->
+                    <section class="card analysis-card">
+                        <h2>Security Analysis</h2>
+                        <div class="analysis-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Entropy</span>
+                                <span class="stat-value" id="entropy-value">0 bits</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Crack Time</span>
+                                <span class="stat-value" id="crack-time">Instant</span>
+                            </div>
+                        </div>
+                        <ul id="suggestions-list" class="suggestions-list">
+                            <!-- Suggestions populated by JS -->
+                        </ul>
+                    </section>
+
+                    <!-- History -->
+                    <section class="card history-card">
+                        <div class="card-header">
+                            <h2>History</h2>
+                            <button id="clear-history-btn" class="btn-text text-danger">Clear</button>
+                        </div>
+                        <div class="history-list-container">
+                            <ul id="history-list" class="history-list">
+                                <!-- History items populated by JS -->
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/entropy.js"></script>
+    <script src="js/strengthChecker.js"></script>
+    <script src="js/generator.js"></script>
+    <script src="js/history.js"></script>
+    <script src="js/presets.js"></script>
+    <script src="js/ui.js"></script>
+</body>
+
+</html>
